@@ -5,10 +5,10 @@ import math
 class Grid(object):
     
     def __init__(self):
-        self.x          = (0, 5)
-        self.y          = (0, 5)
+        self.x          = (0, 10)
+        self.y          = (0, 10)
         self.cursrc     = (3, 3) #current_src
-        self.num_nodes  = 4
+        self.num_nodes  = 10
         self.dst        = (5, 5)
         self.hops       = 2
         self.range      = 2
@@ -65,8 +65,9 @@ def euclidean_distance(src,dst):
     return distance
 
 def main():
-    grid = Grid()
-    grid.run()
+    for i in range(1,5):
+        grid = Grid()
+        grid.run()
     # print grid.distance((1,2),(1,3))
            
 if __name__ == "__main__":
