@@ -1,57 +1,46 @@
 import random
-import numpy
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+from numpy import random
+import math
 class Grid(object):
 
-    def __init__(self, dict):
-        """
-        Initializes the coordinate system
-        """
-        self.x1         = 0
-        self.xlimit     = dict['xlimit']
-        self.y1         = 0
-        self.ylimit     = dict['ylimit']
-        self.src_x      = dict['src_x']
-        self.src_y      = dict['src_y']
-        self.range      = dict['range']
-        self.iterations = dict['iterations']
-        self.nodes      = dict['nodes']
-        self.sink_x     = dict['sink_x']
-        self.sink_y     = dict['sink_y']
-        self.generate_data()
-        self.draw()
 
-    def generate_data(self):
-        self.x_range = [i for i in range(self.x1, self.xlimit+1)]
-        self.y_range = [i for i in range(self.y1, self.ylimit+1)]
-        self.x_range.remove(self.src_x)
-        self.y_range.remove(self.src_y)
-    
-    def draw(self):
-        plt.plot([self.src_x, self.sink_x],[self.src_y,self.sink_y],'ro')
-        plt.axis([self.x1, self.xlimit, self.y1, self.ylimit])
-        plt.show()
-    
-    def select_random(self):
-        pass
+    def __init__(self):
 
+        self.x          = (0, 5)
+        self.y          = (0, 5)
+        self.src        = (3, 3)
+        self.num_nodes  = 4
+        self.destination= (5, 5)
+        self.range      = 1
+    
+    def run(self):
+        not_converged = True
+        while not_converged:
+            coordinates = self.generate()
+            for tuples in coordinates:
+                euclidean_distance = math.sqrt((self.src[0]-tuples[0])**2+\
+                        (self.src[1]-tuples[1])**2)
+                if euclidean_distance <= self.range:
+                    print "Converged",tuples,euclidean_distance
+                    not_converged=False
+                    break
+
+
+    def generate(self):
+
+        recent_coordinates = []
+        i = 0
+        while i < self.num_nodes:
+            x = random.randint(self.x[0], self.x[1])
+            y = random.randint(self.y[0],self.y[1])
+            if (x, y) != self.destination and (x, y) != self.src:
+                recent_coordinates.append((x, y))
+                i += 1
+        return recent_coordinates
 
 def main():
-    config = {
-            "xlimit":100,
-            "ylimit":100,
-            "src_x":50,
-            "src_y":50,
-            "range":1, #MAX distance to which node can hear
-            "iterations":100,
-            "nodes":4,
-            "sink_x":100,
-            "sink_y":100
-            }
-    a = Grid(config)
-
+    grid = Grid()
+    grid.run()
+           
 if __name__=="__main__":
     main()
-
-
