@@ -10,12 +10,12 @@ class Grid(object):
     """
     
     def __init__(self):
-        self.x          = (0, 6)
-        self.y          = (0, 6)
+        self.x          = (0, 5)
+        self.y          = (0, 5)
+        self.src        = (3,3)
         self.cursrc     = (3, 3) #current_src
         self.num_nodes  = 4
         self.dst        = (5, 5)
-        self.MAXHOPS    = 2
         self.range      = 1
         self.counter    = 0
         self.path_x     = [] 
@@ -40,7 +40,7 @@ class Grid(object):
         while msg_not_sent:
             if self.distance(self.cursrc, self.dst):
                 self.counter += 1
-                print "Message Successfully Delivered in {}".format(self.counter)
+                print "Message Successfully Delivered in {},last hop {}".format(self.counter,self.cursrc)
                 msg_not_sent = False
             else:
                 in_range = False
@@ -54,7 +54,8 @@ class Grid(object):
                             self.counter += 1 
                             in_range = True
                     time.sleep(0.2)
-        plt.plot(self.path_x, self.path_y,'ro')
+        plt.plot(self.path_x, self.path_y, 'r--')
+        plt.plot([self.src[0], self.dst[0]], [self.src[1], self.dst[1]])
         plt.axis([0, 6, 0, 6])
         plt.show()
 
@@ -66,8 +67,8 @@ class Grid(object):
         neighbours = []
         i = 0
         while i < self.num_nodes:
-            x = random.randint(self.x[0], self.x[1])
-            y = random.randint(self.y[0],self.y[1])
+            x = random.uniform(self.x[0], self.x[1])
+            y = random.uniform(self.y[0], self.y[1])
             if (x, y) != self.dst and (x, y) != exclusion_tuple:
                 neighbours.append((x, y))
                 i += 1
