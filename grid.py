@@ -1,25 +1,24 @@
 import random
-from numpy import random
 import math
 import time
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 class Grid(object):
     """
     Creates the graph for the system.
     """
-    
     def __init__(self):
         self.x          = (0, 5)
         self.y          = (0, 5)
-        self.src        = (3,3)
+        self.src        = (3, 3)
         self.cursrc     = (3, 3) #current_src
-        self.num_nodes  = 4
+        self.num_nodes  = 4 
         self.dst        = (5, 5)
         self.range      = 1
         self.counter    = 0
-        self.path_x     = [] 
-        self.path_y     = [] 
+        self.path_x     =[] 
+        self.path_y     =[] 
     def distance(self, src, dst):
         """
         Calculates the distance between the src and the dst.
@@ -40,7 +39,8 @@ class Grid(object):
         while msg_not_sent:
             if self.distance(self.cursrc, self.dst):
                 self.counter += 1
-                print "Message Successfully Delivered in {},last hop {}".format(self.counter,self.cursrc)
+                print "Message Successfully Delivered in {},last hop {}".\
+                        format(self.counter, self.cursrc)
                 msg_not_sent = False
             else:
                 in_range = False
@@ -54,9 +54,27 @@ class Grid(object):
                             self.counter += 1 
                             in_range = True
                     time.sleep(0.2)
-        plt.plot(self.path_x, self.path_y, 'r--')
-        plt.plot([self.src[0], self.dst[0]], [self.src[1], self.dst[1]])
-        plt.axis([0, 6, 0, 6])
+        self.plot()
+    def plot(self):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        mobile_path, = ax.plot(self.path_x, self.path_y, 'r--',label='Mobile Path')
+        ax.annotate('src',xy=(self.src[0], self.src[1]))
+        ax.annotate('dst', xy=(self.dst[0], self.dst[1]))
+        ax.annotate('final-hop',xy=(self.cursrc[0],self.cursrc[1]))
+        fixed_path, = ax.plot([self.src[0], self.dst[0],self.cursrc[0]],\
+                [self.src[1],self.dst[1],self.cursrc[1]],'g^',label="Fixed Path")
+        ax.axis([0, 8, 0, 8])
+        plt.xlabel("X - Coordinate(units)")
+        plt.ylabel("Y - Coordinate(units)")
+        stats = "Number of Hops to Converge:{}\n Last Hop:{}\n \
+                Number of Nodes:{} \n Range:{}".format (self.counter,self.cursrc,\
+                self.num_nodes,self.range)
+        ax.text(0.95,0.01, stats,verticalalignment='bottom', 
+                horizontalalignment='right',transform=ax.transAxes, color='blue',
+                fontsize=15)
+        plt.legend([mobile_path,fixed_path],["Path taken by Nodes",'Direct Path'])
+        plt.title("Path Taken for Convergence")
         plt.show()
 
     def generate(self, exclusion_tuple):
